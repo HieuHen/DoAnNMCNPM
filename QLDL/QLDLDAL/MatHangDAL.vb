@@ -3,7 +3,7 @@ Imports System.Data.SqlClient
 Imports QLDLDTO
 Imports Utility
 
-Public Class HoSoDaiLyDAL
+Public Class MatHangDAL
     Private connectionString As String
 
     Public Sub New()
@@ -14,10 +14,10 @@ Public Class HoSoDaiLyDAL
         Me.connectionString = ConnectionString
     End Sub
 
-    Public Function buildMaDaiLy(ByRef nextMaDaiLy As Integer) As Result
-        Dim MaOnDB As Integer
+    Public Function buildMaMatHang(ByRef nextMaMatHang As Integer) As Result
+        Dim MaMHonDB As Integer
         Dim query As String = String.Empty
-        query &= " SELECT IDENT_CURRENT('HOSODAILY')"
+        query &= " SELECT IDENT_CURRENT('MATHANG')"
         Using conn As New SqlConnection(connectionString)
             Using comm As New SqlCommand()
                 With comm
@@ -31,14 +31,14 @@ Public Class HoSoDaiLyDAL
                     reader = comm.ExecuteReader()
                     If reader.HasRows = True Then
                         While reader.Read()
-                            MaOnDB = Convert.ToInt32(reader.GetValue(0))
+                            MaMHonDB = Convert.ToInt32(reader.GetValue(0))
                         End While
                     End If
 
                 Catch ex As Exception
                     conn.Close() ' that bai!!!
                     System.Console.WriteLine(ex.StackTrace)
-                    Return New Result(False, "Lấy tự động Mã Đại Lý kế tiếp không thành công", ex.StackTrace)
+                    Return New Result(False, "Lấy tự động Mã Mặt Hàng kế tiếp không thành công", ex.StackTrace)
                 End Try
             End Using
         End Using
@@ -47,7 +47,7 @@ Public Class HoSoDaiLyDAL
 
 
         query = String.Empty
-        query &= "SELECT * FROM [HOSODAILY] where [MaDaiLy] = @MaDaiLy"
+        query &= "SELECT * FROM [MATHANG] where [MaMatHang] = @MaMatHang"
         'neu has row thi nextMshs = "SELECT IDENT_CURRENT('HOCSINH')" + 1
         'neu khong co row thì next Mshs = 1;
         Using conn As New SqlConnection(connectionString)
@@ -56,38 +56,37 @@ Public Class HoSoDaiLyDAL
                     .Connection = conn
                     .CommandType = CommandType.Text
                     .CommandText = query
-                    .Parameters.AddWithValue("@MaDaiLy", MaOnDB)
+                    .Parameters.AddWithValue("@MaMatHang", MaMHonDB)
                 End With
                 Try
                     conn.Open()
                     Dim reader As SqlDataReader
                     reader = comm.ExecuteReader()
                     If reader.HasRows = True Then
-                        nextMaDaiLy = 1 + MaOnDB
+                        nextMaMatHang = 1 + MaMHonDB
                     Else
-                        nextMaDaiLy = MaOnDB
+                        nextMaMatHang = MaMHonDB
                     End If
                 Catch ex As Exception
                     conn.Close() ' that bai!!!
                     System.Console.WriteLine(ex.StackTrace)
-                    Return New Result(False, "Lấy tự động Mã Đại Lý kế tiếp không thành công", ex.StackTrace)
+                    Return New Result(False, "Lấy tự động Mã Mặt Hàng kế tiếp không thành công", ex.StackTrace)
                 End Try
             End Using
         End Using
         Return New Result(True) ' thanh cong
     End Function
 
-
-    Public Function insert(daiLy As HoSoDaiLyDTO) As Result
+    Public Function insert(MatHang As MatHangDTO) As Result
 
         Dim query As String = String.Empty
-        query &= "INSERT INTO [HOSODAILY] ( [TenDaiLy], [MaLoaiDaiLy], [DienThoai], [DiaChi],[MaQuan],[NgayTiepNhan],[Email],[NoCuaDaiLy])"
-        query &= "VALUES (@TenDaiLy,@MaLoaiDaiLy,@DienThoai,@DiaChi,@MaQuan,@NgayTiepNhan,@Email,@NoCuaDaiLy)"
+        query &= "INSERT INTO [MATHANG] (  [TenMatHang], [SoLuongTon])"
+        query &= "VALUES (@TenMatHang,@SoLuongTon)"
 
 
-        Dim nextMaDaiLy = "1"
-        buildMaDaiLy(nextMaDaiLy)
-        daiLy.MaDaiLy = nextMaDaiLy
+        Dim nextMaMatHang = "1"
+        buildMaMatHang(nextMaMatHang)
+        MatHang.MaMatHang = nextMaMatHang
 
         Using conn As New SqlConnection(connectionString)
             Using comm As New SqlCommand()
@@ -95,15 +94,9 @@ Public Class HoSoDaiLyDAL
                     .Connection = conn
                     .CommandType = CommandType.Text
                     .CommandText = query
+                    .Parameters.AddWithValue("@TenMatHang", MatHang.TenMatHang)
+                    .Parameters.AddWithValue("@SoLuongTon", MatHang.SoLuongTon)
 
-                    .Parameters.AddWithValue("@TenDaiLy", daiLy.TenDaiLy)
-                    .Parameters.AddWithValue("@MaLoaiDaiLy", daiLy.MaLoaiDaiLy)
-                    .Parameters.AddWithValue("@DienThoai", daiLy.DienThoai)
-                    .Parameters.AddWithValue("@DiaChi", daiLy.DiaChi)
-                    .Parameters.AddWithValue("@MaQuan", daiLy.MaQuan)
-                    .Parameters.AddWithValue("@NgayTiepNhan", daiLy.NgayTiepNhan)
-                    .Parameters.AddWithValue("@Email", daiLy.Email)
-                    .Parameters.AddWithValue("@NoCuaDaiLy", daiLy.NoCuaDaiLy)
                 End With
                 Try
                     conn.Open()
@@ -111,25 +104,20 @@ Public Class HoSoDaiLyDAL
                 Catch ex As Exception
                     conn.Close()
                     System.Console.WriteLine(ex.StackTrace)
-                    Return New Result(False, "Thêm thẻ Đại lý không thành công", ex.StackTrace)
+                    Return New Result(False, "Thêm Mặt Hàng không thành công", ex.StackTrace)
                 End Try
             End Using
         End Using
         Return New Result(True) ' thanh cong
     End Function
-    Public Function update(dl As HoSoDaiLyDTO) As Result
+    Public Function update(mh As MatHangDTO) As Result
 
         Dim query As String = String.Empty
-        query &= " UPDATE [HOSODAILY] SET"
-        query &= " [TenDaiLy] = @TenDaiLy "
-        query &= " ,[MaLoaiDaiLy] = @MaLoaiDaiLy "
-        query &= " ,[DienThoai] = @DienThoai "
-        query &= " ,[DiaChi] = @DiaChi "
-        query &= " ,[MaQuan] = @MaQuan "
-        query &= " ,[NgayTiepNhan] = @NgayTiepNhan "
-        query &= " ,[Email] = @Email "
+        query &= " UPDATE [MATHANG] SET"
+        query &= " [TenMatHang] = @TenMatHang "
+        query &= " ,[SoLuongTon] = @SoLuongTon "
         query &= " WHERE "
-        query &= " [MaDaiLy] = @MaDaiLy "
+        query &= " [MaMatHang] = @MaMatHang "
 
         Using conn As New SqlConnection(connectionString)
             Using comm As New SqlCommand()
@@ -137,15 +125,9 @@ Public Class HoSoDaiLyDAL
                     .Connection = conn
                     .CommandType = CommandType.Text
                     .CommandText = query
-                    .Parameters.AddWithValue("@MaDaiLy", dl.MaDaiLy)
-                    .Parameters.AddWithValue("@MaLoaiDaiLy", dl.MaLoaiDaiLy)
-                    .Parameters.AddWithValue("@MaQuan", dl.MaQuan)
-                    .Parameters.AddWithValue("@NgayTiepNhan", dl.NgayTiepNhan)
-                    .Parameters.AddWithValue("@NoCuaDaiLy", dl.NoCuaDaiLy)
-                    .Parameters.AddWithValue("@TenDaiLy", dl.TenDaiLy)
-                    .Parameters.AddWithValue("@DienThoai", dl.DienThoai)
-                    .Parameters.AddWithValue("@Email", dl.Email)
-                    .Parameters.AddWithValue("@DiaChi", dl.DiaChi)
+                    .Parameters.AddWithValue("@MaMatHang", mh.MaMatHang)
+                    .Parameters.AddWithValue("@TenMatHang", mh.TenMatHang)
+                    .Parameters.AddWithValue("@SoLuongTon", mh.SoLuongTon)
                 End With
                 Try
                     conn.Open()
@@ -154,18 +136,18 @@ Public Class HoSoDaiLyDAL
                     Console.WriteLine(ex.StackTrace)
                     conn.Close()
                     ' them that bai!!!
-                    Return New Result(False, "Cập nhật Đại Lý không thành công", ex.StackTrace)
+                    Return New Result(False, "Cập nhật Mặt Hàng không thành công", ex.StackTrace)
                 End Try
             End Using
         End Using
         Return New Result(True) ' thanh cong
     End Function
-    Public Function delete(MaDaiLy As String) As Result
+    Public Function selectALL(ByRef listMatHang As List(Of MatHangDTO)) As Result
 
         Dim query As String = String.Empty
-        query &= " DELETE FROM [HoSoDaiLy] "
-        query &= " WHERE "
-        query &= " [MaDaiLy] = @MaDaiLy "
+        query &= " SELECT [MaMatHang], [TenMatHang], [SoLuongTon]"
+        query &= " FROM [MatHang]"
+
 
         Using conn As New SqlConnection(connectionString)
             Using comm As New SqlCommand()
@@ -173,7 +155,78 @@ Public Class HoSoDaiLyDAL
                     .Connection = conn
                     .CommandType = CommandType.Text
                     .CommandText = query
-                    .Parameters.AddWithValue("@MaDaiLy", MaDaiLy)
+                End With
+                Try
+                    conn.Open()
+                    Dim reader As SqlDataReader
+                    reader = comm.ExecuteReader()
+                    If reader.HasRows = True Then
+                        listMatHang.Clear()
+                        While reader.Read()
+                            listMatHang.Add(New MatHangDTO(reader("MaMatHang"), reader("TenMatHang"), reader("SoLuongTon")))
+                        End While
+                    End If
+                Catch ex As Exception
+                    Console.WriteLine(ex.StackTrace)
+                    conn.Close()
+                    ' them that bai!!!
+                    Return New Result(False, "Lấy tất cả Mặt Hàng không thành công", ex.StackTrace)
+                End Try
+            End Using
+        End Using
+        Return New Result(True) ' thanh cong
+    End Function
+    Public Function selectALL_ByMaMatHang(iMaMatHang As Integer, ByRef listMatHang As List(Of MatHangDTO)) As Result
+
+        Dim query As String = String.Empty
+        query &= " SELECT [MaMattHang], [TenMatHang], [SoLuongTon]"
+        query &= " FROM [MATHANG]"
+        query &= " WHERE "
+        query &= " [MaMatHang] = @MaMatHang"
+
+
+        Using conn As New SqlConnection(connectionString)
+            Using comm As New SqlCommand()
+                With comm
+                    .Connection = conn
+                    .CommandType = CommandType.Text
+                    .CommandText = query
+                    .Parameters.AddWithValue("@MaMatMang", iMaMatHang)
+                End With
+                Try
+                    conn.Open()
+                    Dim reader As SqlDataReader
+                    reader = comm.ExecuteReader()
+                    If reader.HasRows = True Then
+                        listMatHang.Clear()
+                        While reader.Read()
+                            listMatHang.Add(New MatHangDTO(reader("MaMatHang"), reader("TenMatHang"), reader("SoLuongTon")))
+                        End While
+                    End If
+                Catch ex As Exception
+                    Console.WriteLine(ex.StackTrace)
+                    conn.Close()
+                    ' them that bai!!!
+                    Return New Result(False, "Lấy tất cả Mặt Hàng không thành công", ex.StackTrace)
+                End Try
+            End Using
+        End Using
+        Return New Result(True) ' thanh cong
+    End Function
+    Public Function delete(MaMatHang As Integer) As Result
+
+        Dim query As String = String.Empty
+        query &= " DELETE FROM [MATHANG] "
+        query &= " WHERE "
+        query &= " [MaMatHang] = @MaMatHang "
+
+        Using conn As New SqlConnection(connectionString)
+            Using comm As New SqlCommand()
+                With comm
+                    .Connection = conn
+                    .CommandType = CommandType.Text
+                    .CommandText = query
+                    .Parameters.AddWithValue("@MaMatHang", MaMatHang)
                 End With
                 Try
                     conn.Open()
@@ -181,82 +234,11 @@ Public Class HoSoDaiLyDAL
                 Catch ex As Exception
                     Console.WriteLine(ex.StackTrace)
                     conn.Close()
-                    System.Console.WriteLine(ex.StackTrace)
-                    Return New Result(False, "Xóa Đại Lý không thành công", ex.StackTrace)
-                End Try
-            End Using
-        End Using
-        Return New Result(True)  ' thanh cong
-    End Function
-    Public Function selectALL(ByRef listDaiLy As List(Of HoSoDaiLyDTO)) As Result
-
-        Dim query As String = String.Empty
-        query &= "SELECT [MaDaiLy], [MaLoaiDaiLy], [TenDaiLy], [DienThoai],[DiaChi],[MaQuan],[NgayTiepNhan],[Email], [NoCuaDaiLy] "
-        query &= "FROM [HoSoDaiLy] "
-
-
-
-        Using conn As New SqlConnection(connectionString)
-            Using comm As New SqlCommand()
-                With comm
-                    .Connection = conn
-                    .CommandType = CommandType.Text
-                    .CommandText = query
-                End With
-                Try
-                    conn.Open()
-                    Dim reader As SqlDataReader
-                    reader = comm.ExecuteReader()
-                    If reader.HasRows = True Then
-                        listDaiLy.Clear()
-                        While reader.Read()
-                            listDaiLy.Add(New HoSoDaiLyDTO(reader("MaDaiLy"), reader("MaLoaiDaiLy"), reader("TenDaiLy"), reader("DienThoai"), reader("DiaChi"), reader("MaQuan"), reader("NgayTiepNhan"), reader("Email"), reader("NoCuaDaiLy")))
-                        End While
-                    End If
-
-                Catch ex As Exception
-                    conn.Close()
-                    System.Console.WriteLine(ex.StackTrace)
-                    Return New Result(False, "Lấy tất cả Đại Lý không thành công", ex.StackTrace)
+                    ' them that bai!!!
+                    Return New Result(False, "Xóa Mặt Hàng không thành công", ex.StackTrace)
                 End Try
             End Using
         End Using
         Return New Result(True) ' thanh cong
     End Function
-    Public Function selectALL_ByType(MaLoaiDaiLy As Integer, ByRef ListDaiLy As List(Of HoSoDaiLyDTO)) As Result
-
-        Dim query As String = String.Empty
-        query &= "SELECT [MaDaiLy], [MaLoaiDaiLy], [TenDaiLy], [DienThoai],[DiaChi],[MaQuan],[NgayTiepNhan],[Email], [NoCuaDaiLy] "
-        query &= "FROM [HoSoDaiLy] "
-        query &= "WHERE [MaLoaiDaiLy] = @MaLoaiDaiLy "
-
-        Using conn As New SqlConnection(connectionString)
-            Using comm As New SqlCommand()
-                With comm
-                    .Connection = conn
-                    .CommandType = CommandType.Text
-                    .CommandText = query
-                    .Parameters.AddWithValue("@MaLoaiDaiLy", MaLoaiDaiLy)
-                End With
-                Try
-                    conn.Open()
-                    Dim reader As SqlDataReader
-                    reader = comm.ExecuteReader()
-                    If reader.HasRows = True Then
-                        ListDaiLy.Clear()
-                        While reader.Read()
-                            ListDaiLy.Add(New HoSoDaiLyDTO(reader("MaDaiLy"), reader("TenDaiLy"), reader("MaLoaiDaiLy"), reader("DienThoai"), reader("DiaChi"), reader("MaQuan"), reader("NgayTiepNhan"), reader("Email"), reader("NoCuaDaiLy")))
-                        End While
-                    End If
-
-                Catch ex As Exception
-                    conn.Close()
-                    System.Console.WriteLine(ex.StackTrace)
-                    Return New Result(False, "Lấy tất cả Đại Lý theo Loại không thành công", ex.StackTrace)
-                End Try
-            End Using
-        End Using
-        Return New Result(True) ' thanh cong
-    End Function
-
 End Class

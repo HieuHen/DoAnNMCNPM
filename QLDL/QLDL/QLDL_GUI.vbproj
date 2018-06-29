@@ -48,6 +48,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -79,6 +80,24 @@
       <DependentUpon>frmMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmMatHang .Designer.vb">
+      <DependentUpon>frmMatHang .vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmMatHang .vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmQLLoaiDaiLy.Designer.vb">
+      <DependentUpon>frmQLLoaiDaiLy.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmQLLoaiDaiLy.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmQLQuan.Designer.vb">
+      <DependentUpon>frmQLQuan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmQLQuan.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmTiepNhanDaiLy.Designer.vb">
       <DependentUpon>frmTiepNhanDaiLy.vb</DependentUpon>
     </Compile>
@@ -100,19 +119,64 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="frmQLDaiLy.Designer.vb">
+      <DependentUpon>frmQLDaiLy.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmQLDaiLy.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmQLMatHang.Designer.vb">
+      <DependentUpon>frmQLMatHang.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmQLMatHang.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTiepNhanQuan.Designer.vb">
+      <DependentUpon>frmTiepNhanQuan.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTiepNhanQuan.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTiepNhanLoaiDaiLy.Designer.vb">
+      <DependentUpon>frmTiepNhanLoaiDaiLy.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmTiepNhanLoaiDaiLy.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmMatHang .resx">
+      <DependentUpon>frmMatHang .vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQLLoaiDaiLy.resx">
+      <DependentUpon>frmQLLoaiDaiLy.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQLQuan.resx">
+      <DependentUpon>frmQLQuan.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmTiepNhanDaiLy.resx">
       <DependentUpon>frmTiepNhanDaiLy.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTiepNhanLoaiDaiLy.resx">
+      <DependentUpon>frmTiepNhanLoaiDaiLy.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQLDaiLy.resx">
+      <DependentUpon>frmQLDaiLy.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmQLMatHang.resx">
+      <DependentUpon>frmQLMatHang.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTiepNhanQuan.resx">
+      <DependentUpon>frmTiepNhanQuan.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,13 @@
 ﻿Public Class QuanDTO
     Private iMaQuan As Integer
     Private strTenQuan As String
-    Private iSoLuongDaiLyToida As Integer
+    Private iSoLuongDaiLyToiDa As Integer
 
-    Public Sub New(iMaQuan As Integer, strTenQuan As String, iSoLuongDaiLyToida As Integer)
+    Public Sub New(iMaQuan As Integer, strTenQuan As String, iSoLuongDaiLyToiDa As Integer)
         Me.iMaQuan = iMaQuan
         Me.strTenQuan = strTenQuan
-        Me.iSoLuongDaiLyToida = iSoLuongDaiLyToida
+        Me.iSoLuongDaiLyToiDa = iSoLuongDaiLyToiDa
+
     End Sub
 
     Public Property MaQuan As Integer
@@ -27,12 +28,12 @@
         End Set
     End Property
 
-    Public Property SoLuongDaiLyToida As Integer
+    Public Property SoLuongDaiLyToiDa As Integer
         Get
-            Return iSoLuongDaiLyToida
+            Return iSoLuongDaiLyToiDa
         End Get
         Set(value As Integer)
-            iSoLuongDaiLyToida = value
+            iSoLuongDaiLyToiDa = value
         End Set
     End Property
 

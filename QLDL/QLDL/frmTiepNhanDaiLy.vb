@@ -13,13 +13,14 @@ Public Class frmTiepNhanDaiLy
         Dim DaiLy As HoSoDaiLyDTO
         DaiLy = New HoSoDaiLyDTO
 
-        DaiLy.Ten = tbTen.Text
+        DaiLy.TenDaiLy = tbTen.Text
         DaiLy.DiaChi = tbDiaChi.Text
         DaiLy.Email = tbEmail.Text
         DaiLy.NgayTiepNhan = dtpNgayTiepNhan.Value
         DaiLy.MaQuan = Convert.ToInt32(cbQuan.SelectedValue)
         DaiLy.MaLoaiDaiLy = Convert.ToInt32(cbLoaiDaiLy.SelectedValue)
         DaiLy.DienThoai = tbDienThoai.Text
+        DaiLy.NoCuaDaiLy = TBNDL.Text
         Dim result As Result
         result = hoSoDaiLyBus.insert(DaiLy)
         If (result.FlagResult = True) Then
@@ -62,8 +63,21 @@ Public Class frmTiepNhanDaiLy
         cbQuan.DataSource = New BindingSource(listQuan, String.Empty)
         cbQuan.DisplayMember = "TenQuan"
         cbQuan.ValueMember = "MaQuan"
+        Dim nextMaDaiLy = "1"
+        result = hoSoDaiLyBus.buildMaDaiLy(nextMaDaiLy)
+        If (result.FlagResult = False) Then
+            MessageBox.Show("Lấy danh tự động mã Đại Lý không thành công.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            System.Console.WriteLine(result.SystemMessage)
+            Me.Close()
+            Return
+        End If
+        TBMDL.Text = nextMaDaiLy
+        TBMDL.Enabled = False
 
 
+    End Sub
+
+    Private Sub cbLoaiDaiLy_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbLoaiDaiLy.SelectedIndexChanged
 
     End Sub
 End Class
